@@ -19,7 +19,7 @@ different types of filtering of announcements:
 
 ## Quickstart
 
-Install the development version:
+Install the most recent release:
 
     pip install pinax-announcements
 
@@ -43,10 +43,3 @@ Optionally, if you want someone other than staff users to manage announcements::
         "pinax.announcements.auth_backends.AnnouncementPermissionsBackend",
         ...
     ]
-
-## Dependencies
-
-* `django-appconf>=1.0.1`
-
-
-

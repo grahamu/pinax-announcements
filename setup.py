@@ -23,6 +23,8 @@ setup(
     package_data={
         "announcements": []
     },
+    install_requires=[
+    ],
     test_suite="runtests.runtests",
     tests_require=[
     ],
