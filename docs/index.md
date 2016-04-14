@@ -13,7 +13,7 @@ different types of filtering of announcements:
 !!! note "Pinax Ecosystem"
     This app was developed as part of the Pinax ecosystem but is just a Django app
     and can be used independently of other Pinax apps.
-    
+
     To learn more about Pinax, see <http://pinaxproject.com/>
 
 
@@ -33,7 +33,7 @@ Add `pinax.announcements` to your `INSTALLED_APPS` setting:
 
 Add entry to your `urls.py`:
 
-    url(r"^announcements/", include("pinax.announcements.urls"))
+    url(r"^announcements/", include("pinax.announcements.urls", namespace="pinax_announcements"))
 
 
 Optionally, if you want someone other than staff users to manage announcements::
