@@ -27,6 +27,9 @@ setup(
     ],
     test_suite="runtests.runtests",
     tests_require=[
+        "mock>=1.3.0",
+        "django-test-plus>=1.0.12",
+        "pinax-theme-bootstrap>=7.7.0",
     ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",

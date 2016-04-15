@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from django.views.generic import View, DetailView
 from django.views.generic.detail import SingleObjectMixin
@@ -15,7 +15,7 @@ from pinax.announcements.models import Announcement
 class AnnouncementDetailView(DetailView):
     template_name = "pinax/announcements/announcement_detail.html"
     model = Announcement
-    context_object_name = 'announcement'
+    context_object_name = "announcement"
 
 
 class AnnouncementDismissView(SingleObjectMixin, View):
@@ -38,6 +38,8 @@ class AnnouncementDismissView(SingleObjectMixin, View):
             status = 409
             if request.is_ajax():
                 return JsonResponse({}, status=status)
+            else:
+                return HttpResponse(content=b"", status=status)
         return HttpResponseRedirect(request.META.get("HTTP_REFERER", "/"))
 
 
@@ -47,7 +49,7 @@ class ProtectedView(View):
         return super(ProtectedView, self).dispatch(*args, **kwargs)
 
 
-class CreateAnnouncementView(ProtectedView, CreateView):
+class AnnouncementCreateView(ProtectedView, CreateView):
     template_name = "pinax/announcements/announcement_form.html"
     model = Announcement
     form_class = AnnouncementForm
@@ -61,19 +63,19 @@ class CreateAnnouncementView(ProtectedView, CreateView):
             announcement=self.object,
             request=self.request
         )
-        return super(CreateAnnouncementView, self).form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
         return reverse("pinax_announcements:announcement_list")
 
 
-class UpdateAnnouncementView(ProtectedView, UpdateView):
+class AnnouncementUpdateView(ProtectedView, UpdateView):
     template_name = "pinax/announcements/announcement_form.html"
     model = Announcement
     form_class = AnnouncementForm
 
     def form_valid(self, form):
-        response = super(UpdateAnnouncementView, self).form_valid(form)
+        response = super(AnnouncementUpdateView, self).form_valid(form)
         signals.announcement_updated.send(
             sender=self.object,
             announcement=self.object,
@@ -85,12 +87,12 @@ class UpdateAnnouncementView(ProtectedView, UpdateView):
         return reverse("pinax_announcements:announcement_list")
 
 
-class DeleteAnnouncementView(ProtectedView, DeleteView):
+class AnnouncementDeleteView(ProtectedView, DeleteView):
     template_name = "pinax/announcements/announcement_confirm_delete.html"
     model = Announcement
 
-    def form_valid(self, form):
-        response = super(DeleteAnnouncementView, self).form_valid(form)
+    def delete(self, request, *args, **kwargs):
+        response = super(AnnouncementDeleteView, self).delete(request, *args, **kwargs)
         signals.announcement_deleted.send(
             sender=self.object,
             announcement=self.object,
@@ -100,7 +102,6 @@ class DeleteAnnouncementView(ProtectedView, DeleteView):
 
     def get_success_url(self):
         return reverse("pinax_announcements:announcement_list")
-
 
 class AnnouncementListView(ProtectedView, ListView):
     template_name = "pinax/announcements/announcement_list.html"
